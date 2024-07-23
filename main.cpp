@@ -1,6 +1,5 @@
 #include <iostream>
-#include <sstream>
-#include <unordered_map>
+#include <unordered_set>
 
 using namespace std;
 
@@ -8,7 +7,17 @@ bool is_valid_date(const int date)
 {
     if (date < 0 || date > 1000000000)
     {
-        cerr << "Invalid date." << endl;
+        cerr << "Error: Invalid date. Date must be between 0 and 1,000,000,000." << endl;
+        return false;
+    }
+    return true;
+}
+
+bool is_valid_number_of_dates(const int num_dates, const int max_limit)
+{
+    if (num_dates < 1 || num_dates > max_limit)
+    {
+        cerr << "Error: Invalid number of dates. Number must be between 1 and " << max_limit << "." << endl;
         return false;
     }
     return true;
@@ -16,15 +25,15 @@ bool is_valid_date(const int date)
 
 int main()
 {
-    unordered_map<int, int> professor_dates;
-    int N; // Number of professsor dates
+    ios::sync_with_stdio(false);
+    cin.tie(nullptr);
+
+    unordered_set<int> professor_dates;
+    int N; // Number of professor dates
     cin >> N;
 
-    if (N < 1 || N > 15000)
-    {
-        cerr << "Invalid number of dates from professor." << endl;
+    if (!is_valid_number_of_dates(N, 15000))
         return 1;
-    }
 
     for (int i = 0; i < N; ++i)
     {
@@ -34,19 +43,16 @@ int main()
         if (!is_valid_date(professor_date))
             return 1;
 
-        professor_dates[professor_date] = 0;
+        professor_dates.insert(professor_date);
     }
 
-    int M;
+    int M; // Number of student dates
     cin >> M;
 
-    if (M < 1 || M > 1000000)
-    {
-        cerr << "Invalid number of dates from student." << endl;
+    if (!is_valid_number_of_dates(M, 1000000))
         return 1;
-    }
 
-    int sum = 0;
+    int matching_dates_count = 0;
     for (int i = 0; i < M; ++i)
     {
         int student_date;
@@ -56,12 +62,10 @@ int main()
             return 1;
 
         if (professor_dates.contains(student_date))
-        {
-            sum++;
-        }
+            matching_dates_count++;
     }
 
-    cout << sum << endl;
+    cout << matching_dates_count << endl;
 
     return 0;
 }
